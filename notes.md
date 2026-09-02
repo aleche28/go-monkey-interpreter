@@ -124,3 +124,42 @@ So the lexer is initialized with the input text and it will work with a loop tha
 Note that our implementation only supports ASCII characters, not UTF-8. To support it we would need to read runes instead of bytes. That can be a possible improvement for later.
 
 
+## 3.2
+
+There are different strategies of evaluation, here some of the most important and common:
+
+- **tree-walking**: the easier but slower approach, the AST is recursively traversed and each node is processed when encountered
+- **AST to bytecode**: the interpreter traverses the AST converting it to bytecode, which is run by a specialized virtual machine
+- **JIT (just in time)**: the interpreter converts it to bytecode which is the compiled into native machine code by the virtual machine, and then executed; sometimes the compilation to bytecode is skipped.
+
+## 3.3
+
+We are going to build a tree-walking interpreter, so our parser builds the AST and the evaluation part interprets it on the fly, without any preprocessing or compilation step.
+
+We need a tree-walking evaluator and a way to represent Monkey values in Go.
+
+pseudo-code of the eval:
+
+```js
+function eval(astNode) {
+    if (astNode is integerliteral) {
+        return astNode.integerValue
+    } else if (astNode is booleanLiteral) {
+        return astNode.booleanValue
+    } else if (astNode is infixExpression) {
+        leftEvaluated = eval(astNode.Left)
+        rightEvaluated = eval(astNode.Right)
+
+        if astNode.Operator == "+" {
+            return leftEvaluated + rightEvaluated
+        } else if ast.Operator == "-" {
+            return leftEvaluated - rightEvaluated
+        }
+    }
+}
+```
+
+as mentioned before, the eval is recursive
+One of the main questions is: what does eval return? which is basically asking which kind of internal object system will our interpreter have
+
+we are going to represent every value we encounter when evaluating monkey source code as an Object, an interface of our design
