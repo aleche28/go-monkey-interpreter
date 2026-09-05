@@ -8,6 +8,7 @@ import (
 // instead of creating a new object each time we encounter a boolean,
 // we just reference the same two objects
 var (
+	NULL  = &object.Null{}
 	TRUE  = &object.Boolean{Value: true}
 	FALSE = &object.Boolean{Value: false}
 )
