@@ -74,6 +74,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		if len(args) == 1 && isError(args[0]) {
 			return args[0]
 		}
+		return applyFunction(function, args)
 	}
 
 	return nil
@@ -257,4 +258,31 @@ func isError(obj object.Object) bool {
 		return obj.Type() == object.ERROR_OBJ
 	}
 	return false
+}
+
+func applyFunction(fn object.Object, args []object.Object) object.Object {
+	function, ok := fn.(*object.Function)
+	if !ok {
+		return newError("not a function: %s", fn.Type())
+	}
+
+	// extend function env
+	env := object.NewEnclosedEnvironment(function.Env)
+
+	// bind args in env
+	for i, param := range function.Parameters {
+		env.Set(param.Value, args[i])
+	}
+
+	// need to unwrap, otherwise a return statement would bubble up
+	// through several functions and stop the evaluation in all of them
+	return unwrapReturnValue(Eval(function.Body, env))
+}
+
+func unwrapReturnValue(obj object.Object) object.Object {
+	if returnValue, ok := obj.(*object.ReturnValue); ok {
+		return returnValue.Value
+	}
+
+	return obj
 }
