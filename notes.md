@@ -2,15 +2,12 @@
 
 What we are goin to build in thi book is a so called 'tree-walking' interpreter, meaning that the interpreter parses the source code and builds an abstract syntax tree (AST), then evalutes the tree. Called 'tree-walking' because it walks the AST and interprets it.
 
-going to build:
-    - lexer
-    - parser
-    - tree representation
-    - evaluator
+going to build: - lexer - parser - tree representation - evaluator
 
 without using pre-existing ones.
 
 Monkey lang features:
+
 - C-like syntax;
 - variable bindings
 - integers and booleans
@@ -69,6 +66,7 @@ twice(addTwo, 2); // => 6
 ```
 
 The interpreter will tokenize and parse Monkey source code in a REPL, building up an internal representation of the code called AST and then evaluate this tree. Major parts:
+
 - lexer
 - parser
 - AST
@@ -120,9 +118,7 @@ const (
 The lexer doesn't need to buffer or store tokens, cause it will just output the next token it reads when the function NextToken() is called by the consumer (in our case the parser).
 So the lexer is initialized with the input text and it will work with a loop that calls the NextToken() until EOF is reached (or error encountered, if any).
 
-
 Note that our implementation only supports ASCII characters, not UTF-8. To support it we would need to read runes instead of bytes. That can be a possible improvement for later.
-
 
 ## 3.2
 
@@ -163,3 +159,8 @@ as mentioned before, the eval is recursive
 One of the main questions is: what does eval return? which is basically asking which kind of internal object system will our interpreter have
 
 we are going to represent every value we encounter when evaluating monkey source code as an Object, an interface of our design
+
+## 3.11
+
+Generally we would need a garbage collector, but our host language Go already provides us one that we are simply reusing (without any additional effort) for our interpreter.
+If we were to use another language like C, we'd need to implement one ourselves.
