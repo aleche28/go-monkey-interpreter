@@ -79,7 +79,6 @@ func New(lex *lexer.Lexer) *Parser {
 	p.registerInfix(token.SLASH, p.parseInfixExpression)
 	p.registerInfix(token.LPAREN, p.parseCallExpression)
 	p.registerInfix(token.LBRACKET, p.parseIndexExpression)
-	// p.registerInfix(token.COLON, p.parseHashEntry)
 
 	// advance twice so both currToken and peekToken are set
 	p.nextToken()
